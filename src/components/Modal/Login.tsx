@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { authModalState } from "@/atoms/authModalAtom";
 import { useSetRecoilState } from "recoil";
+import { auth } from "@/firebase/firebase";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useRouter } from "next/router";
 
 type LoginProps = {};
 
@@ -10,8 +13,42 @@ const Login: React.FC<LoginProps> = () => {
     setAuthModalState((prev) => ({ ...prev, type: type }));
   };
 
+  const [inputs, setInputs] = useState({ email: "", password: "" });
+
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const router = useRouter();
+
+  const handleLogin = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!inputs.email || !inputs.password)
+      return alert("Please fill all fields");
+
+    try {
+      const newUser = await signInWithEmailAndPassword(
+        inputs.email,
+        inputs.password
+      );
+
+      if (!newUser) return;
+      router.push("/");
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (error) alert(error.message);
+  }, [error]);
+
   return (
-    <form className="space-y-6 px-6 pb-4">
+    <form className="space-y-6 px-6 pb-4" onSubmit={handleLogin}>
       <h3 className="text-xl font-medium text-white">Sign in to LeetClone</h3>
       <div>
         <label
@@ -21,6 +58,7 @@ const Login: React.FC<LoginProps> = () => {
           Your Email
         </label>
         <input
+          onChange={handleInputChange}
           type="email"
           name="email"
           id="email"
@@ -39,6 +77,7 @@ const Login: React.FC<LoginProps> = () => {
           Your Password
         </label>
         <input
+          onChange={handleInputChange}
           type="password"
           name="password"
           id="password"
@@ -54,7 +93,7 @@ const Login: React.FC<LoginProps> = () => {
         className="w-full text-white focus:ring-blue-300 font-medium rounded-lg text-sm
         px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s"
       >
-        Login
+        {loading ? "Logging in..." : "Log In"}
       </button>
 
       <button
