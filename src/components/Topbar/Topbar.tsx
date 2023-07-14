@@ -1,10 +1,11 @@
-import React from "react";
-import Link from "next/link";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/firebase";
-import Logout from "../Buttons/Logout";
-import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
+import { auth } from "@/firebase/firebase";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
+import Logout from "../Buttons/Logout";
 
 type TopbarProps = {};
 
@@ -19,7 +20,7 @@ const Topbar: React.FC<TopbarProps> = () => {
         className={`flex w-full items-center justify-between max-w-[1200px] mx-auto`}
       >
         <Link href="/" className="h-[22px] flex-1">
-          <img src="/logo-full.png" alt="Logo" className="h-full" />
+          <Image src="/logo-full.png" alt="Logo" width={100} height={100} />
         </Link>
 
         <div className="flex items-center space-x-4 flex-1 justify-end">
@@ -54,10 +55,12 @@ const Topbar: React.FC<TopbarProps> = () => {
           {user && (
             <>
               <div className="cursor-pointer group relative">
-                <img
+                <Image
                   src="/avatar.png"
-                  alt="user profile img"
-                  className="h-8 w-8 rounded-full"
+                  alt="user profile image"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
                 />
                 <div
                   className="absolute top-10 left-2/4 -translate-x-2/4 mx-auto 
