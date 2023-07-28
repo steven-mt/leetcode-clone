@@ -1,4 +1,4 @@
-import { Problem } from "@/utils/types/problem";
+import { LocalProblem } from "@/utils/types/problem";
 import { javascript } from "@codemirror/lang-javascript";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
@@ -7,7 +7,7 @@ import Split from "react-split";
 import EditorFooter from "./EditorFooter";
 import PreferenceNav from "./PreferenceNav/PreferenceNav";
 
-type PlaygroundProps = { problem: Problem };
+type PlaygroundProps = { problem: LocalProblem };
 
 const Playground: React.FC<PlaygroundProps> = ({ problem }) => {
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);

@@ -1,10 +1,10 @@
-import { Problem } from "@/utils/types/problem";
+import { LocalProblem } from "@/utils/types/problem";
 import React from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 
-type ProblemDescriptionProps = { problem: Problem };
+type ProblemDescriptionProps = { problem: LocalProblem };
 
 const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
   return (

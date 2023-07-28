@@ -1,10 +1,10 @@
-import { Problem } from "@/utils/types/problem";
+import { LocalProblem } from "@/utils/types/problem";
 import React from "react";
 import Split from "react-split";
 import Playground from "./Playground/Playground";
 import ProblemDescription from "./ProblemDescription/ProblemDescription";
 
-type WorkspaceProps = { problem: Problem };
+type WorkspaceProps = { problem: LocalProblem };
 
 const Workspace: React.FC<WorkspaceProps> = ({ problem }) => {
   return (

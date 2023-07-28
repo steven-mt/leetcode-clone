@@ -1,10 +1,10 @@
 import Topbar from "@/components/Topbar/Topbar";
 import Workspace from "@/components/Workspace/Workspace";
 import { problems } from "@/utils/problems";
-import { Problem } from "@/utils/types/problem";
+import { LocalProblem } from "@/utils/types/problem";
 import React from "react";
 
-type ProblemPageProps = { problem: Problem };
+type ProblemPageProps = { problem: LocalProblem };
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
   console.log(problem);
