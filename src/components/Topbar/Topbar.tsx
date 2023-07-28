@@ -85,7 +85,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
             </Link>
           )}
 
-          {problemPage && <Timer />}
+          {user && problemPage && <Timer />}
 
           {user && (
             <>
