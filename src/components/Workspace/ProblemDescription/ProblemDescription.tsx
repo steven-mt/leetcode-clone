@@ -2,12 +2,20 @@ import CircleSkeleton from "@/components/Skeletons/CircleSkeleton";
 import RectangleSkeleton from "@/components/Skeletons/RectangleSkeleton";
 import { auth, firestore } from "@/firebase/firebase";
 import { DBProblem, LocalProblem } from "@/utils/types/problem";
-import { doc, getDoc, runTransaction } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  runTransaction,
+  updateDoc,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   AiFillDislike,
   AiFillLike,
+  AiFillStar,
   AiOutlineLoading3Quarters,
 } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
@@ -181,6 +189,39 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
     setUpdating(false);
   };
 
+  const handleStar = async () => {
+    if (!user) {
+      toast.error("You must be logged in to star a problem", {
+        position: "top-left",
+        theme: "dark",
+      });
+      return;
+    }
+
+    if (updating) return;
+    setUpdating(true);
+
+    if (!starred) {
+      const userRef = doc(firestore, "users", user.uid);
+
+      await updateDoc(userRef, {
+        starredProblems: arrayUnion(problem.id),
+      });
+
+      setData((prev) => ({ ...prev, starred: true }));
+    } else {
+      const userRef = doc(firestore, "users", user.uid);
+
+      await updateDoc(userRef, {
+        starredProblems: arrayRemove(problem.id),
+      });
+
+      setData((prev) => ({ ...prev, starred: false }));
+    }
+
+    setUpdating(false);
+  };
+
   return (
     <div className="bg-dark-layer-1">
       {/* TAB */}
@@ -260,8 +301,17 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                 <div
                   className="cursor-pointer hover:bg-dark-fill-3 rounded p-[3px]
                   ml-4 text-xl transition-colors duration-200 text-green-s text-dark-gray-6 "
+                  onClick={handleStar}
                 >
-                  <TiStarOutline />
+                  {starred && !updating && (
+                    <AiFillStar className="text-dark-yellow" />
+                  )}
+
+                  {!starred && !updating && <TiStarOutline />}
+
+                  {updating && (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  )}
                 </div>
               </div>
             )}
