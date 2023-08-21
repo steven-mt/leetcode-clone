@@ -7,7 +7,6 @@ import React from "react";
 type ProblemPageProps = { problem: LocalProblem };
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
-  console.log(problem);
   return (
     <>
       <Topbar problemPage />
