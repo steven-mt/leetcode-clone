@@ -1,7 +1,10 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/firebase";
+import { problems } from "@/utils/problems";
+import { LocalProblem } from "@/utils/types/problem";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BsList } from "react-icons/bs";
@@ -19,6 +22,30 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 
   const setAuthModalState = useSetRecoilState(authModalState);
 
+  const router = useRouter();
+  const handleProblemChange = (isForward: boolean) => {
+    const { order } = problems[router.query.pid as string] as LocalProblem;
+    const direction = isForward ? 1 : -1;
+    const nextProblemOrder = order + direction;
+    const nextProblemKey = Object.keys(problems).find(
+      (key) => problems[key].order === nextProblemOrder
+    );
+
+    if (isForward && !nextProblemKey) {
+      const firstProblemKey = Object.keys(problems).find(
+        (key) => problems[key].order === 1
+      );
+      router.push(`/problems/${firstProblemKey}`);
+    } else if (!isForward && !nextProblemKey) {
+      const lastProblemKey = Object.keys(problems).find(
+        (key) => problems[key].order === Object.keys(problems).length
+      );
+      router.push(`/problems/${lastProblemKey}`);
+    } else {
+      router.push(`/problems/${nextProblemKey}`);
+    }
+  };
+
   return (
     <nav className="relative flex h-[50px] w-full shrink-0 items-center px-5 bg-dark-layer-1 text-dark-gray-7">
       <div
@@ -35,6 +62,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
             <div
               className="flex items-center justify-center rounded bg-dark-fill-3 
             hover:bg-dark-fill-2 h-8 w-8 cursor-pointer"
+              onClick={() => handleProblemChange(false)}
             >
               <FaChevronLeft />
             </div>
@@ -50,6 +78,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
             <div
               className="flex items-center justify-center rounded bg-dark-fill-3 
             hover:bg-dark-fill-2 h-8 w-8 cursor-pointer"
+              onClick={() => handleProblemChange(true)}
             >
               <FaChevronRight />
             </div>
