@@ -64,8 +64,7 @@ function getListValues(head: LinkedList): number[] {
   return values;
 }
 
-const starterCodeReverseLinkedListJS = `
-/**
+const starterCodeReverseLinkedListJS = `/**
  * Definition for singly-linked list.
  * function ListNode(val, next) {
  *     this.val = (val===undefined ? 0 : val)
