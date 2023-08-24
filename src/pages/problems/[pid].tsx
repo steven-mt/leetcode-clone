@@ -1,5 +1,6 @@
 import Topbar from "@/components/Topbar/Topbar";
 import Workspace from "@/components/Workspace/Workspace";
+import useHasMounted from "@/hooks/useHasMounted";
 import { problems } from "@/utils/problems";
 import { LocalProblem } from "@/utils/types/problem";
 import React from "react";
@@ -7,6 +8,9 @@ import React from "react";
 type ProblemPageProps = { problem: LocalProblem };
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
+  const hasMounted = useHasMounted();
+  if (!hasMounted) return null;
+
   return (
     <>
       <Topbar problemPage />

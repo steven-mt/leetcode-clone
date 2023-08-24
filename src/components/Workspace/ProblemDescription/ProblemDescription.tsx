@@ -22,9 +22,15 @@ import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
 
-type ProblemDescriptionProps = { problem: LocalProblem };
+type ProblemDescriptionProps = {
+  problem: LocalProblem;
+  _solved: boolean;
+};
 
-const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
+const ProblemDescription: React.FC<ProblemDescriptionProps> = ({
+  problem,
+  _solved,
+}) => {
   const [user] = useAuthState(auth);
 
   const { currentProblem, loading, problemDifficultyClass, setCurrentProblem } =
@@ -254,7 +260,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                   {currentProblem.difficulty}
                 </div>
 
-                {solved && (
+                {(solved || _solved) && (
                   <div
                     className="rounded p-[3px] ml-4 text-lg transition-colors duration-200
                     text-green-s text-dark-green-s"

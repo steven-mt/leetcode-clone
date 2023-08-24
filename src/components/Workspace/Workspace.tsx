@@ -13,11 +13,17 @@ const Workspace: React.FC<WorkspaceProps> = ({ problem }) => {
 
   const [success, setSuccess] = useState(false);
 
+  const [solved, setSolved] = useState(false);
+
   return (
     <Split className="split" minSize={0}>
-      <ProblemDescription problem={problem} />
+      <ProblemDescription problem={problem} _solved={solved} />
       <div className="bg-dark-fill-2">
-        <Playground problem={problem} />
+        <Playground
+          problem={problem}
+          setSuccess={setSuccess}
+          setSolved={setSolved}
+        />
         {success && (
           <Confetti
             gravity={0.3}
