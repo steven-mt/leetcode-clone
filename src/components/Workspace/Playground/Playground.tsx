@@ -6,7 +6,7 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Split from "react-split";
 import { toast } from "react-toastify";
@@ -26,7 +26,7 @@ const Playground: React.FC<PlaygroundProps> = ({
 }) => {
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
 
-  const [userCode, setUserCode] = useState<string>(problem.starterCode);
+  let [userCode, setUserCode] = useState<string>(problem.starterCode);
 
   const [user] = useAuthState(auth);
 
@@ -45,6 +45,8 @@ const Playground: React.FC<PlaygroundProps> = ({
     }
 
     try {
+      userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
+
       const cb = new Function(`return ${userCode}`)();
       const success = problems[pid as string].handlerFunction(cb);
 
@@ -89,8 +91,19 @@ const Playground: React.FC<PlaygroundProps> = ({
     }
   };
 
+  useEffect(() => {
+    const code = localStorage.getItem(`code-${pid}`);
+
+    if (user) {
+      setUserCode(code ? JSON.parse(code) : problem.starterCode);
+    } else {
+      setUserCode(problem.starterCode);
+    }
+  }, [pid, user, problem.starterCode]);
+
   const onChange = (value: string) => {
     setUserCode(value);
+    localStorage.setItem(`code-${pid}`, JSON.stringify(value));
   };
 
   return (
@@ -104,7 +117,7 @@ const Playground: React.FC<PlaygroundProps> = ({
       >
         <div className="w-full overflow-auto">
           <CodeMirror
-            value={problem.starterCode}
+            value={userCode}
             theme={vscodeDark}
             onChange={onChange}
             extensions={[javascript()]}
