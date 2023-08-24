@@ -48,33 +48,38 @@ const Playground: React.FC<PlaygroundProps> = ({
       userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
 
       const cb = new Function(`return ${userCode}`)();
-      const success = problems[pid as string].handlerFunction(cb);
+      const handler = problems[pid as string].handlerFunction;
 
-      if (success) {
-        toast.success("Congrats! All tests passed!", {
-          position: "top-center",
-          autoClose: 3000,
-          theme: "dark",
-        });
+      if (typeof handler === "function") {
+        const success = handler(cb);
 
-        setSuccess(true);
+        if (success) {
+          toast.success("Congrats! All tests passed!", {
+            position: "top-center",
+            autoClose: 3000,
+            theme: "dark",
+          });
 
-        setTimeout(() => {
-          setSuccess(false);
-        }, 4000);
+          setSuccess(true);
 
-        const userRef = doc(firestore, "users", user.uid);
-        await updateDoc(userRef, {
-          solvedProblems: arrayUnion(pid),
-        });
+          setTimeout(() => {
+            setSuccess(false);
+          }, 4000);
 
-        setSolved(true);
+          const userRef = doc(firestore, "users", user.uid);
+          await updateDoc(userRef, {
+            solvedProblems: arrayUnion(pid),
+          });
+
+          setSolved(true);
+        }
       }
     } catch (error: any) {
       if (
-        error.message.startsWith(
-          "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
-        )
+        // error.message.startsWith(
+        //   "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
+        // )
+        error.message.toLowerCase().includes("error")
       ) {
         toast.error("Oops! One or more test cases failed", {
           position: "top-center",
