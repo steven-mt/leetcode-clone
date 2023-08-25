@@ -1,4 +1,5 @@
 import { auth, firestore } from "@/firebase/firebase";
+import useLocalStorage from "@/hooks/useLocalStorage";
 import { problems } from "@/utils/problems";
 import { LocalProblem } from "@/utils/types/problem";
 import { javascript } from "@codemirror/lang-javascript";
@@ -19,6 +20,12 @@ type PlaygroundProps = {
   setSolved: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+export interface ISettings {
+  fontSize: string;
+  settingsModalIsOpen: boolean;
+  dropdownIsOpen: boolean;
+}
+
 const Playground: React.FC<PlaygroundProps> = ({
   problem,
   setSuccess,
@@ -27,6 +34,14 @@ const Playground: React.FC<PlaygroundProps> = ({
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
 
   let [userCode, setUserCode] = useState<string>(problem.starterCode);
+
+  const [LSFontSize, setLSFontSize] = useLocalStorage("lcc-fontsize", "16px");
+
+  const [settings, setSettings] = useState<ISettings>({
+    fontSize: LSFontSize,
+    settingsModalIsOpen: false,
+    dropdownIsOpen: false,
+  });
 
   const [user] = useAuthState(auth);
 
@@ -113,7 +128,7 @@ const Playground: React.FC<PlaygroundProps> = ({
 
   return (
     <div className="flex flex-col bg-dark-layer-1 relative overflow-x-hidden">
-      <PreferenceNav />
+      <PreferenceNav settings={settings} setSettings={setSettings} />
       <Split
         className="h-[calc(100vh-94px)]"
         direction="vertical"
@@ -126,7 +141,7 @@ const Playground: React.FC<PlaygroundProps> = ({
             theme={vscodeDark}
             onChange={onChange}
             extensions={[javascript()]}
-            style={{ fontSize: 16 }}
+            style={{ fontSize: settings.fontSize }}
           />
         </div>
 
